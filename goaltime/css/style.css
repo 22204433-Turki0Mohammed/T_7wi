@@ -77,6 +77,7 @@ input:focus, select:focus, textarea:focus { outline: 2px solid var(--green-dark)
 .nav-btn {
   background: transparent; color: var(--txt-dim);
   padding: .45rem .8rem; border-radius: 10px; font-weight: 600; font-size: .92rem;
+  white-space: nowrap;
 }
 .nav-btn:hover { color: var(--txt); background: var(--card); }
 .nav-btn.active { color: var(--txt); background: var(--green-soft); color: var(--green); }
@@ -85,6 +86,7 @@ input:focus, select:focus, textarea:focus { outline: 2px solid var(--green-dark)
 .lang-switch button {
   background: transparent; color: var(--txt-dim);
   padding: .25rem .55rem; border-radius: 8px; font-size: .8rem; font-weight: 700;
+  min-width: 58px; /* identical width in every language → no jumping */
 }
 .lang-switch button.active { background: var(--green); color: #06250f; }
 .user-chip {
@@ -99,6 +101,7 @@ input:focus, select:focus, textarea:focus { outline: 2px solid var(--green-dark)
   display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
   padding: .7rem 1.3rem; border-radius: 12px; font-weight: 800; font-size: .95rem;
   transition: transform .12s ease, filter .12s ease;
+  white-space: nowrap; /* keeps layout stable across ar/en/tr label widths */
 }
 .btn:hover { transform: translateY(-1px); filter: brightness(1.08); }
 .btn:active { transform: translateY(0); }
@@ -171,8 +174,9 @@ input:focus, select:focus, textarea:focus { outline: 2px solid var(--green-dark)
 .how .step p { color: var(--txt-dim); font-size: .88rem; }
 
 /* ---------------- Stadium detail ---------------- */
-.detail-head { display: grid; gap: 1.2rem; margin-top: 1.4rem; }
-@media (min-width: 900px) { .detail-head { grid-template-columns: 3fr 2fr; align-items: start; } }
+.detail-head { display: grid; gap: 1.2rem; margin-top: 1.4rem; grid-template-columns: minmax(0, 1fr); }
+.detail-head > * { min-width: 0; }
+@media (min-width: 900px) { .detail-head { grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); align-items: start; } }
 .gallery { display: grid; gap: .5rem; }
 .gallery .main { border-radius: var(--radius); overflow: hidden; aspect-ratio: 16/9; background: #14532d; }
 .gallery .main img { width: 100%; height: 100%; object-fit: cover; }
@@ -195,8 +199,12 @@ input:focus, select:focus, textarea:focus { outline: 2px solid var(--green-dark)
 }
 .amenity span.ic { font-size: 1.1rem; }
 
-.map-wrap { border-radius: var(--radius); overflow: hidden; border: 1px solid var(--line); margin-top: .8rem; }
-.map-wrap iframe { width: 100%; height: 280px; border: 0; display: block; filter: grayscale(.2); }
+.map-wrap { border-radius: var(--radius); overflow: hidden; border: 1px solid var(--line); margin-top: .8rem; width: 100%; }
+.map-wrap iframe {
+  width: 100%; max-width: 100%;
+  height: clamp(220px, 38vh, 360px); min-height: 220px;
+  border: 0; display: block; filter: grayscale(.2);
+}
 
 /* ---------------- Slots ---------------- */
 .day-strip { display: flex; gap: .5rem; overflow-x: auto; padding-block: .5rem; scrollbar-width: thin; }
@@ -248,7 +256,7 @@ input:focus, select:focus, textarea:focus { outline: 2px solid var(--green-dark)
 
 /* ---------------- Bookings list ---------------- */
 .tabs { display: flex; gap: .4rem; margin-bottom: 1rem; }
-.tab { background: var(--card); color: var(--txt-dim); padding: .5rem 1.1rem; border-radius: 999px; font-weight: 800; font-size: .9rem; }
+.tab { background: var(--card); color: var(--txt-dim); padding: .5rem 1.1rem; border-radius: 999px; font-weight: 800; font-size: .9rem; min-width: 110px; white-space: nowrap; }
 .tab.active { background: var(--green); color: #06250f; }
 .booking-row {
   background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);

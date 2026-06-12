@@ -31,7 +31,7 @@ const I18N = (() => {
     no_results:       { ar: 'لا توجد ملاعب مطابقة لبحثك', en: 'No stadiums match your search', tr: 'Aramanızla eşleşen saha yok' },
     from:             { ar: 'يبدأ من', en: 'From', tr: 'Başlangıç' },
     per_hour:         { ar: '/ ساعة', en: '/ hour', tr: '/ saat' },
-    currency:         { ar: 'ر.س', en: 'SAR', tr: 'SAR' },
+    currency:         { ar: '₺', en: '₺', tr: '₺' },
     view_details:     { ar: 'عرض التفاصيل والحجز', en: 'View details & book', tr: 'Detaylar ve rezervasyon' },
     reviews_count:    { ar: 'تقييم', en: 'reviews', tr: 'yorum' },
 
@@ -105,7 +105,7 @@ const I18N = (() => {
     /* ---------- Auth ---------- */
     name:             { ar: 'الاسم', en: 'Name', tr: 'İsim' },
     phone:            { ar: 'رقم الجوال', en: 'Phone number', tr: 'Telefon numarası' },
-    phone_hint:       { ar: 'مثال: 9665XXXXXXXX', en: 'e.g. 9665XXXXXXXX', tr: 'örn. 905XXXXXXXXX' },
+    phone_hint:       { ar: 'مثال: 905XXXXXXXXX', en: 'e.g. 905XXXXXXXXX', tr: 'örn. 905XXXXXXXXX' },
     welcome_back:     { ar: 'أهلاً بعودتك', en: 'Welcome back', tr: 'Tekrar hoş geldin' },
     auth_sub:         { ar: 'أدخل رقم جوالك — سننشئ حساباً لك تلقائياً إن لم يكن لديك.', en: 'Enter your phone — we will create an account automatically if you are new.', tr: 'Telefonunu gir — yeniysen otomatik hesap oluştururuz.' },
     continue:         { ar: 'متابعة', en: 'Continue', tr: 'Devam et' },
@@ -138,6 +138,22 @@ const I18N = (() => {
     vd_status_approved:{ ar: 'معتمد', en: 'Approved', tr: 'Onaylı' },
     vd_status_pending:{ ar: 'بانتظار الاعتماد', en: 'Pending approval', tr: 'Onay bekliyor' },
     vd_user_banned_auto:{ ar: 'تم حظر اللاعب تلقائياً لتجاوزه حد الغياب', en: 'Player auto-banned for exceeding the no-show limit', tr: 'Oyuncu, gelmeme sınırını aştığı için otomatik banlandı' },
+    vd_add_stadium:   { ar: 'إضافة ملعب جديد', en: 'Add new stadium', tr: 'Yeni saha ekle' },
+    vd_new_name:      { ar: 'اسم الملعب', en: 'Stadium name', tr: 'Saha adı' },
+    vd_new_district:  { ar: 'الحي / المنطقة', en: 'District / area', tr: 'Semt / bölge' },
+    vd_grass:         { ar: 'نوع العشب', en: 'Grass type', tr: 'Çim türü' },
+    vd_open_hour:     { ar: 'ساعة الافتتاح', en: 'Opening hour', tr: 'Açılış saati' },
+    vd_close_hour:    { ar: 'ساعة الإغلاق', en: 'Closing hour', tr: 'Kapanış saati' },
+    vd_amenities:     { ar: 'المرافق المتوفرة', en: 'Available amenities', tr: 'Mevcut olanaklar' },
+    vd_create:        { ar: 'إرسال للاعتماد', en: 'Submit for approval', tr: 'Onaya gönder' },
+    vd_created:       { ar: 'تم إرسال الملعب — سيظهر للجمهور بعد اعتماد الإدارة', en: 'Stadium submitted — it will go live after admin approval', tr: 'Saha gönderildi — yönetici onayından sonra yayına girecek' },
+    vd_deactivate:    { ar: 'إيقاف مؤقت', en: 'Deactivate', tr: 'Devre dışı bırak' },
+    vd_activate:      { ar: 'إعادة التفعيل', en: 'Reactivate', tr: 'Yeniden etkinleştir' },
+    vd_reviews:       { ar: 'تقييمات ملاعبي', en: 'My stadium reviews', tr: 'Sahalarımın yorumları' },
+    vd_reply:         { ar: 'إرسال الرد', en: 'Send reply', tr: 'Yanıt gönder' },
+    vd_reply_placeholder:{ ar: 'اكتب ردك على هذا التقييم…', en: 'Write your reply to this review…', tr: 'Bu yoruma yanıtını yaz…' },
+    vd_no_reviews:    { ar: 'لا توجد تقييمات على ملاعبك بعد', en: 'No reviews on your stadiums yet', tr: 'Sahalarında henüz yorum yok' },
+    owner_reply:      { ar: 'رد صاحب الملعب', en: 'Owner reply', tr: 'Saha sahibinin yanıtı' },
 
     /* ---------- Admin dashboard ---------- */
     ad_title:         { ar: 'لوحة التحكم الإدارية', en: 'Super Admin Dashboard', tr: 'Süper Yönetici Paneli' },
@@ -171,7 +187,7 @@ const I18N = (() => {
     not_authorized:   { ar: 'هذه الصفحة غير متاحة لحسابك', en: 'This page is not available for your account', tr: 'Bu sayfa hesabınız için kullanılamaz' },
     back:             { ar: 'رجوع', en: 'Back', tr: 'Geri' },
     close:            { ar: 'إغلاق', en: 'Close', tr: 'Kapat' },
-    sar_hr:           { ar: 'ر.س/ساعة', en: 'SAR/hr', tr: 'SAR/saat' },
+    sar_hr:           { ar: '₺/ساعة', en: '₺/hr', tr: '₺/saat' },
   };
 
   const LANGS = {
@@ -212,7 +228,7 @@ const I18N = (() => {
 
   function fmtDate(isoDate) {
     const d = new Date(isoDate + 'T00:00:00');
-    return d.toLocaleDateString(locale(), { weekday: 'long', day: 'numeric', month: 'long' });
+    return d.toLocaleDateString(locale(), { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
   }
 
   function fmtHour(h) {

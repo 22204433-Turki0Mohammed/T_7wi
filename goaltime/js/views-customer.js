@@ -288,6 +288,7 @@
                 <span class="stars">${App.starsHTML(r.rating)}</span>
               </div>
               <p>${esc(I18N.pick(r.text))}</p>
+              ${r.reply ? `<p style="color:var(--green)">↳ <b>${t('owner_reply')}:</b> ${esc(I18N.pick(r.reply))}</p>` : ''}
             </div>`).join('')
           : `<div class="empty">${t('no_reviews')}</div>`}
       </div>`;
