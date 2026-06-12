@@ -4,10 +4,9 @@
 
 ## ▶️ التشغيل
 
-لا يحتاج أي تثبيت أو بناء — افتح `goaltime/index.html` مباشرة في المتصفح، أو شغّل خادماً محلياً:
+لا يحتاج أي تثبيت أو بناء — افتح `index.html` مباشرة في المتصفح، أو شغّل خادماً محلياً:
 
 ```bash
-cd goaltime
 python3 -m http.server 8080
 # ثم افتح http://localhost:8080
 ```
@@ -43,7 +42,7 @@ python3 -m http.server 8080
 ## 🏗️ البنية والتوسع المستقبلي
 
 ```
-goaltime/
+T_7wi/
 ├── index.html            هيكل الصفحة الواحدة (SPA)
 ├── css/style.css         نظام التصميم (Mobile-First، خصائص CSS منطقية للـ RTL)
 └── js/
