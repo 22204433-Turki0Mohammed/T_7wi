@@ -22,6 +22,9 @@
       date: filters.date || null,
     });
 
+    // (re)attach the Flatpickr date picker once this view is in the DOM
+    window.__afterRender = initDatePicker;
+
     return `
       <section class="hero">
         <h1>${t('hero_title')}</h1>
@@ -57,12 +60,8 @@
         </div>
         <div>
           <label>📅 ${t('filter_date')}</label>
-          <input class="date-input" dir="ltr" placeholder="${t('select_date')}"
-                 type="${filters.date ? 'date' : 'text'}" min="${Store.todayISO()}" value="${filters.date}"
-                 onfocus="this.type='date'; this.showPicker && this.showPicker();"
-                 onblur="if(!this.value){ this.type='text'; }"
-                 onclick="this.showPicker && this.showPicker()"
-                 onchange="Views.setFilter('date', this.value)"/>
+          <input id="filter-date" class="date-input" type="text" dir="ltr" readonly
+                 placeholder="${t('select_date')}" value="${esc(filters.date)}"/>
         </div>
       </div>
 
@@ -93,6 +92,33 @@
       const el = document.getElementById('f-q');
       el.focus(); el.setSelectionRange(el.value.length, el.value.length);
     }
+  }
+
+  /* Flatpickr date picker — full control over locale & styling, so the
+     calendar always matches the site language (not the OS). Re-created on
+     each home render; falls back to a native date input if the CDN is down. */
+  const FP_LOCALE = { ar: 'ar', tr: 'tr', en: 'default' };
+  function initDatePicker() {
+    const el = document.getElementById('filter-date');
+    if (!el) return;
+    if (window._fp) { try { window._fp.destroy(); } catch (e) {} window._fp = null; }
+
+    if (typeof flatpickr === 'undefined') {           // CDN unavailable → graceful native fallback
+      el.removeAttribute('readonly');
+      el.setAttribute('onfocus', "this.type='date'; this.showPicker && this.showPicker();");
+      el.setAttribute('onblur', "if(!this.value){ this.type='text'; }");
+      el.setAttribute('onchange', "Views.setFilter('date', this.value)");
+      return;
+    }
+
+    window._fp = flatpickr(el, {
+      locale: FP_LOCALE[I18N.lang()] || 'default',
+      dateFormat: 'Y-m-d',
+      minDate: Store.todayISO(),
+      defaultDate: filters.date || null,
+      disableMobile: true,                            // use Flatpickr UI on mobile too
+      onChange: function (_dates, str) { Views.setFilter('date', str); },
+    });
   }
 
   function stadiumCard(s) {
