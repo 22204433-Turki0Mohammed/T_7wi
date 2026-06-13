@@ -9,6 +9,90 @@
 
   const ALL_AMENITIES = ['changing', 'wc', 'parking', 'balls', 'water', 'lighting', 'cafeteria'];
 
+  /* ---------------- Hybrid image picker (upload / camera / URL, max 6) ----------------
+     No backend: uploaded files are downscaled via <canvas> to compact JPEG data URLs
+     and stored in the same images[] array as pasted URLs. */
+  const MAX_IMAGES = 6;
+  let pickImages = [];                       // current form's working set
+
+  function resizeToDataURL(file, maxDim, quality) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onerror = reject;
+      reader.onload = () => {
+        const img = new Image();
+        img.onerror = reject;
+        img.onload = () => {
+          let { width: w, height: h } = img;
+          if (w > h && w > maxDim) { h = Math.round(h * maxDim / w); w = maxDim; }
+          else if (h >= w && h > maxDim) { w = Math.round(w * maxDim / h); h = maxDim; }
+          const cv = document.createElement('canvas');
+          cv.width = w; cv.height = h;
+          cv.getContext('2d').drawImage(img, 0, 0, w, h);
+          resolve(cv.toDataURL('image/jpeg', quality));
+        };
+        img.src = reader.result;
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function pickerHTML() {
+    const full = pickImages.length >= MAX_IMAGES;
+    return `
+      <div class="img-picker">
+        <div class="img-grid">
+          ${pickImages.map((src, i) => `
+            <div class="img-thumb">
+              <img src="${esc(src)}" alt="" onerror="this.parentNode.classList.add('broken')"/>
+              <button type="button" class="img-del" title="${t('img_remove')}"
+                      onclick="VendorViews.removeImg(${i})">✕</button>
+            </div>`).join('')}
+          ${!full ? `
+            <label class="img-add" title="${t('img_upload')}">
+              <!-- no capture attr → OS shows BOTH camera and gallery (multi-select) -->
+              <input type="file" accept="image/*" multiple hidden
+                     onchange="VendorViews.onFiles(this)"/>
+              <span class="ic">📷</span><span class="lbl">${t('img_upload')}</span>
+            </label>` : ''}
+        </div>
+        <div class="img-urlrow">
+          <input id="img-url" type="url" dir="ltr" placeholder="${t('img_url_ph')}" ${full ? 'disabled' : ''}
+                 onkeydown="if(event.key==='Enter'){event.preventDefault();VendorViews.addUrl();}"/>
+          <button type="button" class="btn btn-ghost btn-sm" ${full ? 'disabled' : ''}
+                  onclick="VendorViews.addUrl()">＋ ${t('img_add_url')}</button>
+        </div>
+        <div class="img-count ${full ? 'max' : ''}">${pickImages.length}/${MAX_IMAGES} ${t('img_count_unit')}</div>
+      </div>`;
+  }
+
+  function refreshPicker() {
+    const box = document.getElementById('img-picker');
+    if (box) box.innerHTML = pickerHTML();
+  }
+
+  function addUrl() {
+    const el = document.getElementById('img-url');
+    const url = (el.value || '').trim();
+    if (!url) return;
+    if (pickImages.length >= MAX_IMAGES) return App.toast(t('img_max'), 'err');
+    pickImages.push(url);
+    el.value = '';
+    refreshPicker();
+  }
+
+  async function onFiles(input) {
+    const files = [...input.files].filter(f => f.type.startsWith('image/'));
+    input.value = '';                                  // allow re-picking the same file
+    for (const f of files) {
+      if (pickImages.length >= MAX_IMAGES) { App.toast(t('img_max'), 'err'); break; }
+      try { pickImages.push(await resizeToDataURL(f, 1000, 0.72)); refreshPicker(); }
+      catch (e) { App.toast(t('fill_required'), 'err'); }
+    }
+  }
+
+  function removeImg(i) { pickImages.splice(i, 1); refreshPicker(); }
+
   function vendorView() {
     const me = Store.currentUser();
     if (!me || me.role !== 'vendor') return `<div class="empty mt2"><div class="big">🔒</div>${t('not_authorized')}</div>`;
@@ -140,7 +224,7 @@
                 </label>`).join('')}
             </div>
           </div>
-          <div class="field full"><label>${t('vd_images')}</label><textarea id="n-images" rows="2" dir="ltr"></textarea></div>
+          <div class="field full"><label>${t('vd_images')}</label><div id="img-picker">${pickerHTML()}</div></div>
         </div>
         <div class="row-actions mt1">
           <button class="btn btn-primary btn-sm" onclick="VendorViews.create()">📤 ${t('vd_create')}</button>
@@ -217,7 +301,7 @@
           </div>
           <div class="field full">
             <label>${t('vd_images')}</label>
-            <textarea id="e-images" rows="3" dir="ltr">${esc(s.images.join('\n'))}</textarea>
+            <div id="img-picker">${pickerHTML()}</div>
           </div>
         </div>
         <div class="row-actions mt1">
@@ -227,7 +311,11 @@
       </div>`;
   }
 
-  function edit(id) { vd.editing = id; App.rerender(); }
+  function edit(id) {
+    vd.editing = id; vd.adding = false;
+    pickImages = id ? [...(Store.stadium(id).images || [])] : [];
+    App.rerender();
+  }
   function setDay(iso) { vd.day = iso; App.rerender(); }
 
   function save(id) {
@@ -240,14 +328,14 @@
       noShowLimit: Math.max(1, +document.getElementById('e-noshow').value || 2),
       cancelHours: +document.getElementById('e-cancel').value || 6,
       openHour: open, closeHour: close,
-      images: document.getElementById('e-images').value.split('\n').map(x => x.trim()).filter(Boolean),
+      images: pickImages.slice(0, MAX_IMAGES),
     });
     vd.editing = null;
     App.toast(t('vd_saved'), 'ok');
     App.rerender();
   }
 
-  function toggleAdd() { vd.adding = !vd.adding; vd.editing = null; App.rerender(); }
+  function toggleAdd() { vd.adding = !vd.adding; vd.editing = null; pickImages = []; App.rerender(); }
 
   function create() {
     const me = Store.currentUser();
@@ -269,7 +357,7 @@
       weekendPrice: +document.getElementById('n-weekend').value || 0,
       openHour: open, closeHour: close,
       amenities: [...document.querySelectorAll('.n-am:checked')].map(x => x.value),
-      images: document.getElementById('n-images').value.split('\n').map(x => x.trim()).filter(Boolean),
+      images: pickImages.slice(0, MAX_IMAGES),
     });
     vd.adding = false;
     App.toast(t('vd_created'), 'ok');
@@ -299,5 +387,6 @@
   }
 
   App.registerPage('vendor', vendorView);
-  window.VendorViews = { edit, setDay, save, mark, toggleAdd, create, setActive, reply };
+  window.VendorViews = { edit, setDay, save, mark, toggleAdd, create, setActive, reply,
+                         addUrl, onFiles, removeImg };
 })();

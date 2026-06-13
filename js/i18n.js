@@ -129,7 +129,7 @@ const I18N = (() => {
     vd_weekend_price: { ar: 'سعر الويكند', en: 'Weekend price', tr: 'Hafta sonu fiyatı' },
     vd_noshow_limit:  { ar: 'حد الغياب قبل الحظر', en: 'No-shows before ban', tr: 'Ban öncesi gelmeme sınırı' },
     vd_cancel_hours:  { ar: 'مهلة الإلغاء (ساعات)', en: 'Cancellation window (hours)', tr: 'İptal süresi (saat)' },
-    vd_images:        { ar: 'روابط الصور (سطر لكل صورة)', en: 'Image URLs (one per line)', tr: 'Görsel URL’leri (her satıra bir)' },
+    vd_images:        { ar: 'صور الملعب (6 كحد أقصى)', en: 'Stadium photos (max 6)', tr: 'Saha fotoğrafları (en fazla 6)' },
     vd_save:          { ar: 'حفظ التغييرات', en: 'Save changes', tr: 'Değişiklikleri kaydet' },
     vd_saved:         { ar: 'تم الحفظ بنجاح', en: 'Saved successfully', tr: 'Başarıyla kaydedildi' },
     vd_today:         { ar: 'اليوم', en: 'Today', tr: 'Bugün' },
@@ -198,6 +198,12 @@ const I18N = (() => {
     reject_confirm:   { ar: 'هل أنت متأكد من رفض وحذف هذا الملعب نهائياً؟', en: 'Are you sure you want to reject and permanently delete this stadium?', tr: 'Bu sahayı reddedip kalıcı olarak silmek istediğine emin misin?' },
     vd_new_desc:      { ar: 'وصف الملعب', en: 'Stadium description', tr: 'Saha açıklaması' },
     select_date:      { ar: 'اختر التاريخ', en: 'Select date', tr: 'Tarih seç' },
+    img_upload:       { ar: 'رفع / التقاط صورة', en: 'Upload / take photo', tr: 'Yükle / fotoğraf çek' },
+    img_add_url:      { ar: 'إضافة رابط', en: 'Add URL', tr: 'URL ekle' },
+    img_url_ph:       { ar: 'ألصق رابط صورة…', en: 'Paste an image URL…', tr: 'Görsel URL’si yapıştır…' },
+    img_count_unit:   { ar: 'صور', en: 'images', tr: 'görsel' },
+    img_max:          { ar: 'الحد الأقصى 6 صور', en: 'Maximum is 6 images', tr: 'En fazla 6 görsel' },
+    img_remove:       { ar: 'حذف', en: 'Remove', tr: 'Kaldır' },
   };
 
   const LANGS = {
