@@ -45,19 +45,20 @@
           <label>💰 ${t('filter_price')}</label>
           <select onchange="Views.setFilter('maxPrice', this.value)">
             <option value="">${t('filter_all')}</option>
-            ${[150, 180, 220, 300].map(p => `<option value="${p}" ${filters.maxPrice == p ? 'selected' : ''}>≤ ${p} ${t('currency')}</option>`).join('')}
+            ${[150, 180, 220, 300].map(p => `<option value="${p}" ${filters.maxPrice == p ? 'selected' : ''}>${p} ${t('currency')}</option>`).join('')}
           </select>
         </div>
         <div>
           <label>⭐ ${t('filter_rating')}</label>
           <select onchange="Views.setFilter('minRating', this.value)">
             <option value="">${t('filter_all')}</option>
-            ${[4, 3].map(r => `<option value="${r}" ${filters.minRating == r ? 'selected' : ''}>${r}+ ${t('stars_plus')}</option>`).join('')}
+            ${[5, 4, 3].map(r => `<option value="${r}" ${filters.minRating == r ? 'selected' : ''}>${'⭐'.repeat(r)}</option>`).join('')}
           </select>
         </div>
         <div>
           <label>📅 ${t('filter_date')}</label>
-          <input type="date" min="${Store.todayISO()}" value="${filters.date}"
+          <input type="date" class="date-input" dir="ltr" min="${Store.todayISO()}" value="${filters.date}"
+                 onclick="this.showPicker && this.showPicker()"
                  onchange="Views.setFilter('date', this.value)"/>
         </div>
       </div>
