@@ -245,6 +245,16 @@ input:focus, select:focus, textarea:focus { outline: 2px solid var(--green-dark)
 .summary .total { font-size: 1.2rem; font-weight: 900; color: var(--green); }
 .policy-note { font-size: .8rem; color: var(--txt-dim); margin-top: .7rem; }
 
+/* ---------------- Preview / approval banner ---------------- */
+.preview-bar {
+  display: flex; align-items: center; gap: .8rem; flex-wrap: wrap;
+  border-radius: var(--radius); padding: .85rem 1.1rem; margin-top: 1rem;
+  font-weight: 700; font-size: .92rem;
+}
+.preview-bar .pb-text { flex: 1; min-width: 200px; }
+.preview-bar.pending { background: rgba(245, 158, 11, .14); border: 1px solid rgba(245, 158, 11, .5); color: #fcd34d; }
+.preview-bar.live { background: rgba(59, 130, 246, .12); border: 1px solid rgba(59, 130, 246, .4); color: #93c5fd; }
+
 /* ---------------- Reviews ---------------- */
 .review { border-top: 1px solid var(--line); padding-block: .9rem; }
 .review .head { display: flex; justify-content: space-between; align-items: center; font-size: .88rem; }

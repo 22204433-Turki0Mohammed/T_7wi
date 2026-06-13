@@ -42,6 +42,7 @@
               <div class="st-city">📍 ${esc(Store.cityName(s.cityId))} · ${esc((Store.user(s.vendorId) || {}).name)} · ${s.basePrice} ${t('sar_hr')}</div>
             </div>
             <div class="row-actions">
+              <button class="btn btn-ghost btn-sm" onclick="App.go('stadium',{id:'${s.id}'})">👁️ ${t('preview')}</button>
               <button class="btn btn-success btn-sm" onclick="AdminViews.approve('${s.id}', true)">✓ ${t('ad_approve')}</button>
               <button class="btn btn-danger btn-sm" onclick="AdminViews.approve('${s.id}', false)">✗ ${t('ad_reject')}</button>
             </div>
@@ -108,7 +109,10 @@
     </div>`;
   }
 
-  function approve(id, ok) { Store.approveStadium(id, ok); App.toast(t('vd_saved'), 'ok'); App.rerender(); }
+  function approve(id, ok) {
+    if (!ok && !confirm(t('reject_confirm'))) return;
+    Store.approveStadium(id, ok); App.toast(t('vd_saved'), 'ok'); App.rerender();
+  }
   function setBan(id, banned) { Store.setBan(id, banned); App.toast(t('vd_saved'), 'ok'); App.rerender(); }
   function setActive(id, active) { Store.setStadiumActive(id, active); App.toast(t('vd_saved'), 'ok'); App.rerender(); }
 

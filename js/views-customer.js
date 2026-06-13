@@ -131,8 +131,20 @@
     const selected = bk.hour !== null && slots.find(sl => sl.hour === bk.hour && sl.state === 'free');
     const mapsUrl = `https://maps.google.com/?q=${s.lat},${s.lng}`;
 
+    const me = Store.currentUser();
+    const isAdmin = me && me.role === 'admin';
+    const isOwner = me && me.role === 'vendor' && s.vendorId === me.id;
+    const pending = !s.approved;
+    // Where the back button returns to, based on who's viewing
+    const backBtn = isAdmin
+      ? `<button class="btn btn-ghost btn-sm mt2" onclick="App.go('admin')">← ${t('back_to_admin')}</button>`
+      : isOwner
+        ? `<button class="btn btn-ghost btn-sm mt2" onclick="App.go('vendor')">← ${t('back_to_vendor')}</button>`
+        : `<button class="btn btn-ghost btn-sm mt2" onclick="App.go('home')">← ${t('back')}</button>`;
+
     return `
-      <button class="btn btn-ghost btn-sm mt2" onclick="App.go('home')">← ${t('back')}</button>
+      ${backBtn}
+      ${previewBanner(s, { isAdmin, isOwner, pending })}
 
       <div class="detail-head">
         <div>
@@ -187,7 +199,9 @@
             <span class="l-past"><i></i>${t('slot_past')}</span>
           </div>
 
-          ${selected ? `
+          ${pending
+            ? `<div class="summary" style="border-color:rgba(245,158,11,.5)"><div class="row">⏳ ${t('preview_no_book')}</div></div>`
+            : selected ? `
             <div class="summary">
               <div class="row"><b>${t('booking_summary')}</b></div>
               <div class="row"><span>📅</span><span>${I18N.fmtDate(bk.date)}</span></div>
@@ -205,6 +219,36 @@
 
       ${reviewsSection(s)}
     `;
+  }
+
+  /* Role-aware banner shown above a stadium page.
+     - Admin viewing a pending stadium → approve/reject bar (the requested feature).
+     - Owner viewing their own stadium → "this is how players see it" note. */
+  function previewBanner(s, { isAdmin, isOwner, pending }) {
+    if (isAdmin && pending) {
+      return `
+        <div class="preview-bar pending">
+          <div class="pb-text">⏳ ${t('pending_banner_admin')}</div>
+          <div class="row-actions">
+            <button class="btn btn-success btn-sm" onclick="Views.previewApprove('${s.id}', true)">✓ ${t('ad_approve')}</button>
+            <button class="btn btn-danger btn-sm" onclick="Views.previewApprove('${s.id}', false)">✗ ${t('ad_reject')}</button>
+          </div>
+        </div>`;
+    }
+    if (isOwner) {
+      return `<div class="preview-bar ${pending ? 'pending' : 'live'}">
+        <div class="pb-text">${pending ? '⏳ ' + t('pending_banner_vendor') : '👁️ ' + t('preview_vendor_live')}</div>
+      </div>`;
+    }
+    return '';
+  }
+
+  /* Admin approves/rejects straight from the preview page, then returns to the panel. */
+  function previewApprove(id, ok) {
+    if (!ok && !confirm(t('reject_confirm'))) return;
+    Store.approveStadium(id, ok);
+    App.toast(t('vd_saved'), 'ok');
+    App.go('admin');
   }
 
   function dayStrip(s) {
@@ -374,6 +418,6 @@
 
   window.Views = {
     setFilter, setDay, pickSlot, setGallery, confirmBooking,
-    setStars, submitReview, setBookingsTab, cancelBooking,
+    setStars, submitReview, setBookingsTab, cancelBooking, previewApprove,
   };
 })();

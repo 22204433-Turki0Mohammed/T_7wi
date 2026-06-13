@@ -183,6 +183,14 @@ const Store = (() => {
   /* ---------------- Catalog ---------------- */
   function cities() { return db.cities; }
   function cityName(id) { return I18N.pick((db.cities.find(c => c.id === id) || {}).name); }
+
+  /* Representative coordinates per city — new stadiums center here on the map */
+  const CITY_COORDS = {
+    lefkosa: { lat: 35.1989, lng: 33.3537 },
+    girne:   { lat: 35.3364, lng: 33.3192 },
+    magusa:  { lat: 35.1264, lng: 33.9391 },
+  };
+  function cityCoords(id) { return CITY_COORDS[id] || CITY_COORDS.lefkosa; }
   function stadium(id) { return db.stadiums.find(s => s.id === id); }
   function user(id) { return db.users.find(u => u.id === id); }
 
@@ -427,7 +435,7 @@ const Store = (() => {
   load();
   return {
     currentUser, loginOrRegister, loginDemo, logout,
-    cities, cityName, stadium, user, publicStadiums, searchStadiums, stadiumRating,
+    cities, cityName, cityCoords, stadium, user, publicStadiums, searchStadiums, stadiumRating,
     slotsFor, slotPrice, slotStart, createBooking, canCancel, cancelBooking, myBookings, isUpcoming,
     canReview, addReview, reviewsFor,
     vendorStadiums, vendorBookings, vendorPendingAttendance, markAttendance, updateStadium,

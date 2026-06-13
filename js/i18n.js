@@ -188,6 +188,15 @@ const I18N = (() => {
     back:             { ar: 'رجوع', en: 'Back', tr: 'Geri' },
     close:            { ar: 'إغلاق', en: 'Close', tr: 'Kapat' },
     sar_hr:           { ar: '₺/ساعة', en: '₺/hr', tr: '₺/saat' },
+    preview:          { ar: 'معاينة', en: 'Preview', tr: 'Önizleme' },
+    back_to_admin:    { ar: 'رجوع للوحة الإدارة', en: 'Back to admin panel', tr: 'Yönetici paneline dön' },
+    back_to_vendor:   { ar: 'رجوع للوحة الملاعب', en: 'Back to my panel', tr: 'Panelime dön' },
+    pending_banner_admin: { ar: 'هذا الملعب بانتظار اعتمادك — راجع التفاصيل والصور والموقع ثم قرّر', en: 'This stadium is awaiting your approval — review the details, photos and location, then decide', tr: 'Bu saha onayını bekliyor — detayları, fotoğrafları ve konumu incele, sonra karar ver' },
+    pending_banner_vendor:{ ar: 'ملعبك قيد المراجعة من الإدارة. هذه معاينة كما سيراه اللاعبون بعد الاعتماد.', en: 'Your stadium is under review. This is a preview of how players will see it once approved.', tr: 'Sahan inceleniyor. Bu, onaylandıktan sonra oyuncuların göreceği önizlemedir.' },
+    preview_vendor_live:  { ar: 'هذه معاينة لملعبك كما يراه اللاعبون.', en: 'This is a preview of your stadium as players see it.', tr: 'Bu, oyuncuların gördüğü şekliyle sahanın önizlemesidir.' },
+    preview_no_book:  { ar: 'الحجز معطّل في وضع المعاينة — الملعب لم يُعتمد بعد', en: 'Booking is disabled in preview — the stadium is not approved yet', tr: 'Önizlemede rezervasyon kapalı — saha henüz onaylı değil' },
+    reject_confirm:   { ar: 'هل أنت متأكد من رفض وحذف هذا الملعب نهائياً؟', en: 'Are you sure you want to reject and permanently delete this stadium?', tr: 'Bu sahayı reddedip kalıcı olarak silmek istediğine emin misin?' },
+    vd_new_desc:      { ar: 'وصف الملعب', en: 'Stadium description', tr: 'Saha açıklaması' },
   };
 
   const LANGS = {

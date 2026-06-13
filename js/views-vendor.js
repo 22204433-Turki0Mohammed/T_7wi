@@ -64,6 +64,7 @@
                 </div>
               </div>
               <div class="row-actions">
+                <button class="btn btn-ghost btn-sm" onclick="App.go('stadium',{id:'${s.id}'})">👁️ ${t('preview')}</button>
                 <button class="btn btn-ghost btn-sm" onclick="VendorViews.edit('${s.id}')">✏️ ${t('vd_edit')}</button>
                 ${s.approved ? `
                   <button class="btn ${s.active ? 'btn-danger' : 'btn-success'} btn-sm" onclick="VendorViews.setActive('${s.id}', ${!s.active})">
@@ -113,6 +114,7 @@
         <div class="form-grid">
           <div class="field"><label>${t('vd_new_name')}</label><input id="n-name"/></div>
           <div class="field"><label>${t('vd_new_district')}</label><input id="n-district"/></div>
+          <div class="field full"><label>${t('vd_new_desc')}</label><textarea id="n-desc" rows="2" placeholder="${t('review_placeholder')}"></textarea></div>
           <div class="field"><label>${t('filter_city')}</label>
             <select id="n-city">
               ${Store.cities().map(c => `<option value="${c.id}">${esc(I18N.pick(c.name))}</option>`).join('')}
@@ -254,9 +256,12 @@
     if (!name || !district) return App.toast(t('fill_required'), 'err');
     const open = Math.min(23, Math.max(0, +document.getElementById('n-open').value || 16));
     const close = Math.max(open + 1, +document.getElementById('n-close').value || 26);
+    const cityId = document.getElementById('n-city').value;
+    const coords = Store.cityCoords(cityId);
     Store.addStadium(me.id, {
-      name, district, desc: name,
-      cityId: document.getElementById('n-city').value,
+      name, district,
+      desc: document.getElementById('n-desc').value.trim() || name,
+      cityId, lat: coords.lat, lng: coords.lng,
       grass: document.getElementById('n-grass').value,
       size: document.getElementById('n-size').value.trim() || '30m × 15m',
       basePrice: +document.getElementById('n-base').value || 0,
