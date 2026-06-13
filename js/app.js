@@ -160,3 +160,10 @@ const App = (() => {
     get route() { return route; },
   };
 })();
+
+/* Top-level `const` does NOT attach to window in browsers, so code that
+   guards on `window.App` (e.g. I18N.setLang) would silently skip. Expose
+   the core singletons explicitly so those references resolve. */
+window.App = App;
+window.I18N = I18N;
+window.Store = Store;
