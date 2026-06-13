@@ -57,7 +57,10 @@
         </div>
         <div>
           <label>📅 ${t('filter_date')}</label>
-          <input type="date" class="date-input" dir="ltr" min="${Store.todayISO()}" value="${filters.date}"
+          <input class="date-input" dir="ltr" placeholder="${t('select_date')}"
+                 type="${filters.date ? 'date' : 'text'}" min="${Store.todayISO()}" value="${filters.date}"
+                 onfocus="this.type='date'; this.showPicker && this.showPicker();"
+                 onblur="if(!this.value){ this.type='text'; }"
                  onclick="this.showPicker && this.showPicker()"
                  onchange="Views.setFilter('date', this.value)"/>
         </div>

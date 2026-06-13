@@ -197,6 +197,7 @@ const I18N = (() => {
     preview_no_book:  { ar: 'الحجز معطّل في وضع المعاينة — الملعب لم يُعتمد بعد', en: 'Booking is disabled in preview — the stadium is not approved yet', tr: 'Önizlemede rezervasyon kapalı — saha henüz onaylı değil' },
     reject_confirm:   { ar: 'هل أنت متأكد من رفض وحذف هذا الملعب نهائياً؟', en: 'Are you sure you want to reject and permanently delete this stadium?', tr: 'Bu sahayı reddedip kalıcı olarak silmek istediğine emin misin?' },
     vd_new_desc:      { ar: 'وصف الملعب', en: 'Stadium description', tr: 'Saha açıklaması' },
+    select_date:      { ar: 'اختر التاريخ', en: 'Select date', tr: 'Tarih seç' },
   };
 
   const LANGS = {
