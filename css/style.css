@@ -35,9 +35,30 @@ body {
   color: var(--txt);
   font-family: var(--font-lt);
   min-height: 100vh;
-  line-height: 1.6;
+  line-height: 1.6;                 /* locked across all 3 fonts → identical vertical rhythm */
+  text-rendering: optimizeLegibility;
 }
 html[lang="ar"] body { font-family: var(--font-ar); }
+
+/* ============================================================
+   i18n stability — instant, jump-free language switching
+   ============================================================ */
+/* Premium fade mask: a short fade-in replays over the freshly
+   swapped DOM each time setLang() toggles .lang-anim. */
+@keyframes gt-langfade { from { opacity: .4; } to { opacity: 1; } }
+html.lang-anim body { animation: gt-langfade .2s ease-out; }
+
+/* Soft transitions so a direction flip eases rather than snaps. */
+.nav-btn, .lang-switch button, .tab, .user-chip {
+  transition: background .15s ease, color .15s ease;
+}
+
+/* Respect users who ask for less motion. */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  html.lang-anim body { animation: none; }
+  .nav-btn, .lang-switch button, .tab, .user-chip { transition: none; }
+}
 
 img { max-width: 100%; display: block; }
 a { color: var(--green); text-decoration: none; }
@@ -61,6 +82,7 @@ input:focus, select:focus, textarea:focus { outline: 2px solid var(--green-dark)
 .nav-inner {
   display: flex; align-items: center; gap: .75rem;
   padding-block: .65rem; flex-wrap: wrap;
+  min-height: 58px;            /* bar keeps the same height in every language */
 }
 .brand {
   display: flex; align-items: center; gap: .5rem;
@@ -95,6 +117,9 @@ input:focus, select:focus, textarea:focus { outline: 2px solid var(--green-dark)
   padding: .3rem .7rem; border-radius: 999px; font-size: .85rem; font-weight: 700;
 }
 .user-chip .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); }
+/* Reserve a stable footprint for the sign-in / sign-out button so the
+   right-hand nav cluster doesn't jump as label widths differ per language. */
+.nav-inner > .btn { min-width: 104px; }
 
 /* ---------------- Buttons ---------------- */
 .btn {

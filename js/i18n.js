@@ -219,13 +219,53 @@ const I18N = (() => {
   function dir() { return LANGS[current].dir; }
 
   function setLang(code) {
-    if (!LANGS[code]) return;
+    if (!LANGS[code] || code === current) return;
     current = code;
     localStorage.setItem('gt_lang', code);
-    document.documentElement.lang = code;
-    document.documentElement.dir = LANGS[code].dir;
+
+    const root = document.documentElement;
+    const y = window.scrollY;                 // preserve scroll across the rebuild
+
+    // 1) Document readiness: flip lang + dir BEFORE content is rebuilt,
+    //    so freshly rendered nodes inherit the correct direction immediately.
+    root.lang = code;
+    root.dir = LANGS[code].dir;
     document.title = t('brand') + ' — ' + t('tagline');
+
+    // 2) Rebuild the dynamic SPA views (they call t() internally) …
     if (window.App) App.rerender();
+    // 3) … and refresh any STATIC [data-i18n] chrome in the document.
+    apply(document);
+
+    window.scrollTo(0, y);                     // kill the scroll jump
+
+    // 4) Premium fade mask: re-trigger a short fade-in over the swapped DOM
+    //    so the eye reads a soft transition instead of a hard jump.
+    root.classList.remove('lang-anim');
+    void root.offsetWidth;                      // force reflow to restart the animation
+    root.classList.add('lang-anim');
+  }
+
+  /* Generic data-i18n applier for static HTML nodes:
+       <span data-i18n="login"></span>                       → textContent
+       <h1 data-i18n-html="hero_title"></h1>                 → innerHTML
+       <input data-i18n-attr="placeholder:search_placeholder; title:filter_city">
+     Pulls from the same DICT, updates the DOM instantly, no reload. */
+  function apply(root) {
+    root = root || document;
+    if (!root || typeof root.querySelectorAll !== 'function') return;
+    root.querySelectorAll('[data-i18n]').forEach(el => {
+      el.textContent = t(el.getAttribute('data-i18n'));
+    });
+    root.querySelectorAll('[data-i18n-html]').forEach(el => {
+      el.innerHTML = t(el.getAttribute('data-i18n-html'));
+    });
+    root.querySelectorAll('[data-i18n-attr]').forEach(el => {
+      el.getAttribute('data-i18n-attr').split(';').forEach(pair => {
+        const [attr, key] = pair.split(':').map(s => s && s.trim());
+        if (attr && key) el.setAttribute(attr, t(key));
+      });
+    });
   }
 
   /* Localized name helper: entities store {ar, en, tr} objects */
@@ -249,9 +289,10 @@ const I18N = (() => {
     document.documentElement.lang = current;
     document.documentElement.dir = LANGS[current].dir;
     document.title = t('brand') + ' — ' + t('tagline');
+    apply(document);
   }
 
-  return { t, lang, setLang, dir, locale, pick, fmtDate, fmtHour, init, LANGS };
+  return { t, lang, setLang, dir, locale, pick, fmtDate, fmtHour, init, apply, LANGS };
 })();
 
 const t = I18N.t;

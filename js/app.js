@@ -35,7 +35,7 @@ const App = (() => {
     const fn = PAGES[route.page] || PAGES.home;
     view.innerHTML = fn(route.params) || '';
     renderNav();
-    document.getElementById('footer-note').textContent = t('footer_note');
+    I18N.apply(document); // refresh static [data-i18n] chrome (footer, etc.)
     if (window.__afterRender) { const f = window.__afterRender; window.__afterRender = null; f(); }
   }
 
